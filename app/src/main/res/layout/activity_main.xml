@@ -1089,7 +1089,6 @@
         </TableRow>
 
         <TableRow
-            android:background="@color/white"
             android:paddingEnd="1dp"
             android:paddingBottom="20dp"
             tools:ignore="RtlSymmetry" />

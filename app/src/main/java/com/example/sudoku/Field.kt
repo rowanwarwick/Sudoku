@@ -1,6 +1,7 @@
 package com.example.sudoku
 
 import android.content.res.Resources
+import android.content.res.Resources.Theme
 import android.graphics.drawable.ColorDrawable
 import android.widget.Button
 import android.widget.TextView
