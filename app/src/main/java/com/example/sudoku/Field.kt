@@ -11,7 +11,8 @@ class Field(
     private val massiveEnterNumber: List<TextView>,
     private val variants: List<TextView>
 ) {
-    private lateinit var numbersFromTextView: MutableList<Int>
+    private lateinit var initialData: MutableList<Int>
+    private lateinit var yourNumbers: MutableMap<Int, String>
     private var modeManual = false
     private var lastEnterElement: TextView? = null
     private val pinkColor = resources.getColor(R.color.pink, null)
@@ -47,7 +48,7 @@ class Field(
                 27 * (column / 3) + 3 * (row / 3) + 9 * (elemInRange / 3) + elemInRange % 3
             for (option in listOf(indexElemInColumn, indexElemInRow, indexElemInBox)) {
                 if (option != indexCell && number == if (showNumber) (massiveEnterNumber[option].text.toString()
-                        .toIntOrNull()) else numbersFromTextView[option]
+                        .toIntOrNull()) else initialData[option]
                 ) {
                     result = false
                     break@loop
@@ -67,7 +68,7 @@ class Field(
 
     fun switchMode(view: Button) {
         modeManual = !modeManual
-        view.text = if (modeManual) "manual mode: on" else "manual mode: off"
+        view.text = if (modeManual) "mode: on" else "mode: off"
     }
 
     private suspend fun makeField(index: Int): Boolean {
@@ -77,7 +78,7 @@ class Field(
                 if (index > 80) {
                     result = true
                 } else {
-                    if (numbersFromTextView[index] != 0) {
+                    if (initialData[index] != 0) {
                         if (makeField(index + 1)) {
                             result = true
                         }
@@ -86,11 +87,11 @@ class Field(
                         val range = (1..9).shuffled()
                         while (!result && digit in 0..8) {
                             if (search(index, range[digit], false)) {
-                                numbersFromTextView[index] = range[digit]
+                                initialData[index] = range[digit]
                                 if (makeField(index + 1)) {
                                     result = true
                                 }
-                                if (!result) numbersFromTextView[index] = 0
+                                if (!result) initialData[index] = 0
                             }
                             digit++
                         }
@@ -104,26 +105,34 @@ class Field(
     private fun openSomeCells(count: Int, forAnswer: Boolean = false) {
         val orderElements = MutableList(81) { it }.shuffled().subList(0, count)
         for (index in orderElements) {
-            if (forAnswer && massiveEnterNumber[index].text != numbersFromTextView[index].toString()) {
+            if (forAnswer && massiveEnterNumber[index].text != initialData[index].toString()) {
                 massiveEnterNumber[index].setTextColor(answerColor)
             }
-            massiveEnterNumber[index].text = numbersFromTextView[index].toString()
+            massiveEnterNumber[index].text = initialData[index].toString()
         }
     }
 
     suspend fun generate(number: Int) {
-        numbersFromTextView = MutableList(81) { 0 }
-        massiveEnterNumber.forEach { it.text = "" }
-        massiveEnterNumber.forEach { it.setTextColor(blackColor) }
-        MainScope().launch {makeField(0)}.join()
+        initialData = MutableList(81) { 0 }
+        massiveEnterNumber.forEach {
+            it.text = ""
+            it.setTextColor(blackColor)
+        }
+        MainScope().launch { makeField(0) }.join()
         openSomeCells(number)
         lastEnterElement?.let { enterNumber(it) }
     }
 
     suspend fun answer() {
-        numbersFromTextView = MutableList(81) {
-            if (massiveEnterNumber[it].currentTextColor == blackColor) massiveEnterNumber[it].text.toString()
-                .toIntOrNull() ?: 0 else 0
+        initialData = emptyList<Int>().toMutableList()
+        if (!massiveEnterNumber.any { it.currentTextColor == answerColor }) yourNumbers =
+            emptyMap<Int, String>().toMutableMap()
+        for ((index, view) in massiveEnterNumber.withIndex()) {
+            initialData.add(
+                if (view.currentTextColor == blackColor) view.text.toString().toIntOrNull()
+                    ?: 0 else 0
+            )
+            if (view.currentTextColor == enterColor) yourNumbers.put(index, view.text.toString())
         }
         MainScope().launch {
             val result = makeField(0)
@@ -142,13 +151,26 @@ class Field(
     }
 
     fun clear() {
+        val answerMassive =
+            massiveEnterNumber.filter { it.currentTextColor == answerColor && it.text != "" }
         val yourMassive =
-            massiveEnterNumber.filter { it.currentTextColor != blackColor && it.text != "" }
-        if (yourMassive.isNotEmpty()) {
+            massiveEnterNumber.filter { it.currentTextColor == enterColor && it.text != "" }
+        if (answerMassive.isNotEmpty()) {
+            answerMassive.forEach {
+                it.text = ""
+                it.setTextColor(blackColor)
+            }
+            for (num in yourNumbers) {
+                massiveEnterNumber[num.key].setTextColor(enterColor)
+                massiveEnterNumber[num.key].text = num.value
+            }
+
+        } else if (yourMassive.isNotEmpty()) {
             yourMassive.forEach { it.text = "" }
         } else {
             variants.forEach { it.setBackgroundColor(whiteColor) }
             massiveEnterNumber.forEach { it.text = "" }
         }
+        lastEnterElement?.let { enterNumber(it) }
     }
 }
