@@ -1104,6 +1104,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1115,6 +1116,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1126,6 +1128,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1137,6 +1140,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1148,6 +1152,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1159,6 +1164,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1170,6 +1176,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1181,6 +1188,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1192,6 +1200,7 @@
                 android:layout_weight="1"
                 android:textSize="20sp"
                 android:background="@color/white"
+                android:textColor="@color/black"
                 android:gravity="center"
                 android:padding="1dp"
                 android:ems="1"
@@ -1215,8 +1224,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="min:10"
-                android:textColor="@color/black" />
+                android:text="min:10" />
 
             <EditText
                 android:id="@+id/input"
@@ -1231,8 +1239,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="max:80"
-                android:textColor="@color/black" />
+                android:text="max:80" />
         </LinearLayout>
 
         <LinearLayout
